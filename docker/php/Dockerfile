@@ -1,24 +1,16 @@
 # Offical Docker Image for PHP
 # https://hub.docker.com/_/php
-FROM php:8.1-fpm
+FROM php:8.1-fpm-alpine3.16
 
 # Set Current Directory
 WORKDIR /var/www/vhost/
 
 # Install dependencies
-RUN apt-get clean && apt-get update && apt-get upgrade -y && apt-get install -y \
-    git \
-    libcurl4-openssl-dev \
-    libonig-dev \
-    libpng-dev \
-    libssl-dev \
-    libicu-dev \
-    libxml2-dev \
-    libzip-dev \
-    unzip \
-    wget \
-    zip \
-    tzdata
+RUN apk --no-cache --update add build-base bash git tzdata \
+        libzip-dev busybox-suid icu-dev libpng-dev jpeg-dev libxml2-dev
+
+
+
 
 RUN docker-php-ext-configure intl
 # PHP Extensions
