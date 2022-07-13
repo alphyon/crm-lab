@@ -31,15 +31,24 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
+            foreach ($this->centralDomains() as $domain){
+                Route::middleware('api')
+                    ->domain($domain)
+                    ->prefix('api')
+                    ->group(base_path('routes/api.php'));
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
+                Route::middleware('web')
+                    ->domain($domain)
+                    ->group(base_path('routes/web.php'));
+            }
+
         });
     }
 
+    protected function centralDomains(): array
+    {
+        return config('tenancy.central_domains', []);
+    }
     /**
      * Configure the rate limiters for the application.
      *
