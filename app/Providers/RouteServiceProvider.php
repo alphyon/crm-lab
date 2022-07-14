@@ -9,6 +9,8 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -31,8 +33,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            foreach ($this->centralDomains() as $domain){
-                Route::middleware('api')
+            foreach ($this->centralDomains() as $domain) {
+                Route::middleware(['api', InitializeTenancyBySubdomain::class, PreventAccessFromCentralDomains::class])
                     ->domain($domain)
                     ->prefix('api')
                     ->group(base_path('routes/api.php'));
@@ -45,10 +47,6 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
-    protected function centralDomains(): array
-    {
-        return config('tenancy.central_domains', []);
-    }
     /**
      * Configure the rate limiters for the application.
      *
@@ -59,5 +57,13 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(strval($request->user()?->id ?: $request->ip()));
         });
+    }
+
+    /**
+     * @return \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
+     */
+    protected function centralDomains() :mixed
+    {
+        return config('tenancy.central_domains', []);
     }
 }
