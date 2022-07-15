@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use http\Exception\RuntimeException;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -34,9 +35,14 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
             foreach ($this->centralDomains() as $domain) {
-                Route::middleware(['api', InitializeTenancyBySubdomain::class, PreventAccessFromCentralDomains::class])
+                Route::middleware([
+                    'api',
+//                    InitializeTenancyBySubdomain::class,
+//                    PreventAccessFromCentralDomains::class
+                ])
                     ->domain($domain)
                     ->prefix('api')
+                    ->as('api:')
                     ->group(base_path('routes/api.php'));
 
                 Route::middleware('web')
@@ -52,18 +58,20 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function configureRateLimiting()
+    protected function configureRateLimiting() :void
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(strval($request->user()?->id ?: $request->ip()));
         });
     }
 
-    /**
-     * @return \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
-     */
-    protected function centralDomains() :mixed
+
+    protected function centralDomains(): array
     {
-        return config('tenancy.central_domains', []);
+        $domains = config('tenancy.central_domains');
+        if(!is_array($domains)){
+            throw new RuntimeException("Tenant Central Domains should be an array");
+        }
+        return $domains;
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->foreignId('department _id')
+            $table->foreignId('department_id')
                 ->nullable()
                 ->index()
                 ->constrained()
