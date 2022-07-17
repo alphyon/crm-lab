@@ -30,7 +30,7 @@ class ContactResource extends JsonApiResource
                'first' => $this->first_name,// @phpstan-ignore-line
                'middle' => $this->middle_name,// @phpstan-ignore-line
                'last' => $this->last_name,// @phpstan-ignore-line
-               'preferred' => $this->preferred,// @phpstan-ignore-line
+               'preferred' => $this->preferred_name,// @phpstan-ignore-line
                'full' => $this->fullName()
            ],
            'phone' => $this->phone,// @phpstan-ignore-line
