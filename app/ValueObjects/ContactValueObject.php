@@ -2,7 +2,9 @@
 
 namespace App\ValueObjects;
 
-final class ContactValueObject
+use App\Contracts\ValueObjectContract;
+
+final class ContactValueObject implements ValueObjectContract
 {
     public function __construct(
         public null|string $title,
@@ -16,7 +18,10 @@ final class ContactValueObject
 
     }
 
-    public function toArray():array
+    /**
+     * @return array
+     */
+    public function toArray() :array
     {
         return [
            'title'=>$this->title,
