@@ -25,4 +25,7 @@ php:
 	@docker exec -it $(PROJECT_NAME)_php /bin/sh
 redis:
 	@docker exec -it $(PROJECT_NAME)_redis /bin/sh
-
+up:
+	@docker-compose up -d
+down:
+	@docker-compose down

@@ -9,11 +9,12 @@ Route::get('ping', function () {
     return "helllo";
 });
 
-//Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('contacts')->as('contacts:')->group(function () {
         Route::get('/', App\Http\Controllers\Api\Contacts\IndexController::class)->name('index');
+        Route::post('/', App\Http\Controllers\Api\Contacts\StoreController::class)->name('store');
     });
-//});
+});
 
 
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

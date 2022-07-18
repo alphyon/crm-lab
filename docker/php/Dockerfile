@@ -7,24 +7,13 @@ WORKDIR /var/www/vhost/
 
 # Install dependencies
 RUN apk --no-cache --update add build-base bash git tzdata \
-        libzip-dev busybox-suid icu-dev libpng-dev jpeg-dev libxml2-dev
+    libpq-dev libzip-dev busybox-suid mysql $PHPIZE_DEPS && \
+    pecl install redis && \
+    pecl install xdebug
 
-
-
-
-RUN docker-php-ext-configure intl
-# PHP Extensions
-RUN docker-php-ext-install \
-    bcmath \
-    exif \
-    gd \
-    mysqli \
-    opcache \
-    pdo_mysql \
-    pcntl \
-    xml \
-    zip \
-    intl
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql && \
+    docker-php-ext-install bcmath pdo pgsql pdo_pgsql zip pdo_mysql && \
+    docker-php-ext-enable redis xdebug
 
 # Install Composer from Official Docker Image
 # https://hub.docker.com/_/composer

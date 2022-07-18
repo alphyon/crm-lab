@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace {{ namespace }};
+namespace App\Http\Requests\Api\Contacts;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class {{ class }} extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -36,10 +36,13 @@ services:
         user: 1000:1000
         volumes:
             - './:/var/www/vhost/html:cached'
+            - './docker/php/config/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini'
 
         working_dir: '/var/www/vhost/html'
         ports:
             - '9003:9003'
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         networks:
             - net_project
 
